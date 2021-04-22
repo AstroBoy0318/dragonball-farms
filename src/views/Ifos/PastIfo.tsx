@@ -6,12 +6,14 @@ import IfoCards from './components/IfoCards'
 
 const inactiveIfo: Ifo[] = ifosConfig.filter((ifo) => !ifo.isActive)
 
-const PastIfo = () => (
-  <IfoCards>
-    {inactiveIfo.map((ifo) => (
-      <IfoCard key={ifo.id} ifo={ifo} />
-    ))}
-  </IfoCards>
-)
+const PastIfo = () => {
+  return (
+    <IfoCards>
+      {inactiveIfo.map((ifo) => (
+        <IfoCard key={ifo.id} ifo={ifo} />
+      ))}
+    </IfoCards>
+  )
+}
 
 export default PastIfo

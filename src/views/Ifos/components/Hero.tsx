@@ -5,20 +5,21 @@ import Container from 'components/layout/Container'
 import useI18n from 'hooks/useI18n'
 
 const Title = styled(Heading).attrs({ as: 'h1', size: 'xl' })`
-  color: ${({ theme }) => theme.colors.primary};
-  text-align: center;
+  color: ${({ theme }) => theme.colors.secondary};
+  margin-bottom: 24px;
 `
 
 const Blurb = styled(Text)`
-  color: ${({ theme }) => theme.colors.secondary};
+  color: #ffffff;
   font-size: 20px;
   font-weight: 600;
-  text-align: center;
 `
 
 const StyledHero = styled.div`
-  padding-bottom: 24px;
-  padding-top: 24px;
+  background-image: linear-gradient(180deg, #53dee9 0%, #1fc7d4 100%);
+  padding-bottom: 40px;
+  padding-top: 40px;
+  margin-bottom: 32px;
 `
 const Hero = () => {
   const TranslateString = useI18n()
@@ -26,9 +27,8 @@ const Hero = () => {
   return (
     <StyledHero>
       <Container>
-        <Title>{TranslateString(500, 'IDO: Initial Dex Offering')}</Title>
+        <Title>{TranslateString(500, 'IFO: Initial Farm Offerings')}</Title>
         <Blurb>{TranslateString(502, 'Buy new tokens with a brand new token sale model.')}</Blurb>
-        <Blurb>1% of the raised amount is used to buyback and burn SALT or contribute to a new Ocean</Blurb>
       </Container>
     </StyledHero>
   )

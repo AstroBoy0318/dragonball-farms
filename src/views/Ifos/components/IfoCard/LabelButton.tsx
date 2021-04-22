@@ -19,22 +19,24 @@ const ButtonWrapper = styled.div`
   padding-left: 16px;
 `
 
-const LabelButton: React.FC<Props> = ({ value, label, buttonLabel, onClick, disabled = false }) => (
-  <div>
-    {label && (
-      <Text fontSize="14px" color="textSubtle">
-        {label}
-      </Text>
-    )}
-    <ButtonWrapper>
-      <Text bold fontSize="20px" color="#b0bec5">
-        {value}
-      </Text>
-      <Button onClick={onClick} disabled={disabled}>
-        {buttonLabel}
-      </Button>
-    </ButtonWrapper>
-  </div>
-)
+const LabelButton: React.FC<Props> = ({ value, label, buttonLabel, onClick, disabled = false }) => {
+  return (
+    <div>
+      {label && (
+        <Text fontSize="14px" color="textSubtle">
+          {label}
+        </Text>
+      )}
+      <ButtonWrapper>
+        <Text bold fontSize="20px">
+          {value}
+        </Text>
+        <Button onClick={onClick} disabled={disabled}>
+          {buttonLabel}
+        </Button>
+      </ButtonWrapper>
+    </div>
+  )
+}
 
 export default LabelButton

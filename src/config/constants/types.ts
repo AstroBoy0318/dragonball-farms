@@ -3,19 +3,21 @@ export type IfoStatus = 'coming_soon' | 'live' | 'finished'
 export interface Ifo {
   id: string
   isActive: boolean
-  address: Address
+  address: string
   name: string
-  token: string
-  maxContribution: string
-  minContribution: string
   subTitle?: string
   description?: string
+  launchDate: string
+  launchTime: string
   saleAmount: string
   raiseAmount: string
+  cakeToBurn: string
   projectSiteUrl: string
   currency: string
   currencyAddress: string
   tokenDecimals: number
+  releaseBlockNumber: number
+  campaignId?: string
 }
 
 export enum QuoteToken {

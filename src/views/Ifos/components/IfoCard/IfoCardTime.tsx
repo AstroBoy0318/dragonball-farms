@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Text } from '@pancakeswap-libs/uikit'
+import { Link, Text } from '@pancakeswap-libs/uikit'
 import { IfoStatus } from 'config/constants/types'
 import getTimePeriods from 'utils/getTimePeriods'
 import useI18n from 'hooks/useI18n'
@@ -10,7 +10,7 @@ export interface IfoCardTimeProps {
   status: IfoStatus
   secondsUntilStart: number
   secondsUntilEnd: number
-  finalized: boolean
+  block: number
 }
 
 const Details = styled.div`
@@ -28,13 +28,7 @@ const Countdown = styled.div`
   text-align: center;
 `
 
-const IfoCardTime: React.FC<IfoCardTimeProps> = ({
-  isLoading,
-  status,
-  secondsUntilStart,
-  secondsUntilEnd,
-  finalized,
-}) => {
+const IfoCardTime: React.FC<IfoCardTimeProps> = ({ isLoading, status, secondsUntilStart, secondsUntilEnd, block }) => {
   const TranslateString = useI18n()
   const countdownToUse = status === 'coming_soon' ? secondsUntilStart : secondsUntilEnd
   const timeUntil = getTimePeriods(countdownToUse)
@@ -47,7 +41,7 @@ const IfoCardTime: React.FC<IfoCardTimeProps> = ({
   if (countdownToUse <= 0) {
     return (
       <Details>
-        <Text bold>{TranslateString(999, 'Finished!')}</Text>
+        <Text bold>{TranslateString(388, 'Finished!')}</Text>
       </Details>
     )
   }
@@ -55,6 +49,9 @@ const IfoCardTime: React.FC<IfoCardTimeProps> = ({
   return (
     <Details>
       <Countdown>{`${timeUntil.days}d, ${timeUntil.hours}h, ${timeUntil.minutes}m until ${suffix}`}</Countdown>
+      <Link href={`https://bscscan.com/block/countdown/${block}`} target="blank" rel="noopener noreferrer" ml="8px">
+        (blocks)
+      </Link>
     </Details>
   )
 }

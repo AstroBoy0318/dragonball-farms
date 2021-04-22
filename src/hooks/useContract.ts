@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { AbiItem } from 'web3-utils'
 import { ContractOptions } from 'web3-eth-contract'
+import { useWeb3React } from '@web3-react/core'
 import useWeb3 from 'hooks/useWeb3'
 import {
   getMasterChefAddress,
@@ -23,6 +24,7 @@ import masterChef from 'config/abi/masterchef.json'
 import masterChef3 from 'config/abi/masterchef3.json'
 import sousChef from 'config/abi/sousChef.json'
 import smartChefBnb from 'config/abi/sousChefBnb.json'
+import { getContractIfo } from 'utils/erc20Ifo'
 
 const CHAIN_ID = process.env.REACT_APP_CHAIN_ID
 
@@ -41,9 +43,19 @@ const useContract = (abi: AbiItem, address: string, contractOptions?: ContractOp
  * Helper hooks to get specific contracts (by ABI)
  */
 
-export const useIfoContract = (address: string) => {
-  const ifoAbi = (ifo as unknown) as AbiItem
-  return useContract(ifoAbi, address)
+export const useIfoContract = (address: string, withSignerIfPossible = true) => {
+  const ABI = ifo;
+  const { library, account } = useWeb3React()
+  const newLibrary = library || window.library
+  return useMemo(() => {
+    if (!address || !ABI || !newLibrary) return null
+    try {
+      return getContractIfo(address, ABI, newLibrary, withSignerIfPossible && account ? account : undefined)
+    } catch (error) {
+      console.error('Failed to get contract', error)
+      return null
+    }
+  }, [address, ABI, newLibrary, withSignerIfPossible, account])
 }
 
 export const useIdoContract = (address: string) => {
