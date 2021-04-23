@@ -1,9 +1,18 @@
 import addresses from 'config/constants/contracts'
+import { Address } from 'config/constants/types'
 
 const chainId = process.env.REACT_APP_CHAIN_ID
 
+export const getAddress = (address: Address): string => {
+  const mainNetChainId = 56
+  return address[chainId] ? address[chainId] : address[mainNetChainId]
+}
+
 export const getCakeAddress = () => {
   return addresses.cake[chainId]
+}
+export const getPointCenterIfoAddress = () => {
+  return getAddress(addresses.pointCenterIfo)
 }
 export const getCake3Address = () => {
   return addresses.cake3[chainId]
@@ -25,4 +34,13 @@ export const getLotteryAddress = () => {
 }
 export const getLotteryTicketAddress = () => {
   return addresses.lotteryNFT[chainId]
+}
+export const getClaimRefundAddress = () => {
+  return getAddress(addresses.claimRefund)
+}
+export const getPancakeProfileAddress = () => {
+  return getAddress(addresses.pancakeProfile)
+}
+export const getBunnyFactoryAddress = () => {
+  return getAddress(addresses.bunnyFactory)
 }

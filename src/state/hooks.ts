@@ -1,14 +1,26 @@
+import { kebabCase } from 'lodash'
 import BigNumber from 'bignumber.js'
-import { useEffect, useRef, useState, useMemo } from 'react'
+import { getAddress } from 'utils/addressHelpers'
+import { useWeb3React } from '@web3-react/core'
+import { useEffect, useRef, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import useRefresh from 'hooks/useRefresh'
 import { useWallet } from '@binance-chain/bsc-use-wallet'
-import poolsConfig from 'config/constants/pools'
-import erc20 from 'config/abi/erc20.json'
-import multicall from 'utils/multicall'
-import { fetchFarmsPublicDataAsync, fetchPoolsPublicDataAsync, fetchPoolsUserDataAsync, fetchFarms3PublicDataAsync } from './actions'
-import { State, Farm, Pool, Farm3 } from './types'
+import { useAppDispatch } from 'state'
+import { Toast, toastTypes } from '@pancakeswap-libs/uikit'
+import { getBalanceNumber } from 'utils/formatBalance'
+import {
+  fetchFarmsPublicDataAsync, fetchPoolsPublicDataAsync, fetchPoolsUserDataAsync, fetchFarms3PublicDataAsync,
+  push as pushToast,
+  remove as removeToast,
+  clear as clearToast
+} from './actions'
+import { State, PriceState, ProfileState, Farm, Pool, Farm3, AchievementState, TeamsState } from './types'
 import { QuoteToken } from '../config/constants/types'
+import { fetchAchievements } from './achievements'
+import Nfts from '../config/constants/nfts'
+import { fetchWalletNfts } from './collectibles'
+import { fetchTeams } from './teams'
 
 const CHAIN_ID = process.env.REACT_APP_CHAIN_ID
 
@@ -213,4 +225,115 @@ export const useTotalValue3 = (): BigNumber => {
     }
   }
   return value;
+}
+
+export const useProfile = () => {
+  const { isInitialized, isLoading, data, hasRegistered }: ProfileState = useSelector((state: State) => state.profile)
+  return { profile: data, hasProfile: isInitialized && hasRegistered, isInitialized, isLoading }
+}
+
+// Toasts
+export const useToast = () => {
+  const dispatch = useAppDispatch()
+  const helpers = useMemo(() => {
+    const push = (toast: Toast) => dispatch(pushToast(toast))
+
+    return {
+      toastError: (title: string, description?: string) => {
+        return push({ id: kebabCase(title), type: toastTypes.DANGER, title, description })
+      },
+      toastInfo: (title: string, description?: string) => {
+        return push({ id: kebabCase(title), type: toastTypes.INFO, title, description })
+      },
+      toastSuccess: (title: string, description?: string) => {
+        return push({ id: kebabCase(title), type: toastTypes.SUCCESS, title, description })
+      },
+      toastWarning: (title: string, description?: string) => {
+        return push({ id: kebabCase(title), type: toastTypes.WARNING, title, description })
+      },
+      push,
+      remove: (id: string) => dispatch(removeToast(id)),
+      clear: () => dispatch(clearToast()),
+    }
+  }, [dispatch])
+
+  return helpers
+}
+
+// Block
+export const useBlock = () => {
+  return useSelector((state: State) => state.block)
+}
+
+export const useLpTokenPrice = (symbol: string) => {
+  const farm = useFarmFromSymbol(symbol)
+  const tokenPriceInUsd = useGetApiPrice(getAddress(farm.token.address))
+
+  return farm.lpTotalSupply && farm.lpTotalInQuoteToken
+    ? new BigNumber(getBalanceNumber(farm.lpTotalSupply)).div(farm.lpTotalInQuoteToken).times(tokenPriceInUsd).times(2)
+    : new BigNumber(0)
+}
+export const useGetApiPrices = () => {
+  const prices: PriceState['data'] = useSelector((state: State) => state.prices.data)
+  return prices
+}
+
+export const useGetApiPrice = (address: string) => {
+  const prices = useGetApiPrices()
+
+  if (!prices) {
+    return null
+  }
+
+  return prices[address.toLowerCase()]
+}
+
+export const useAchievements = () => {
+  const achievements: AchievementState['data'] = useSelector((state: State) => state.achievements.data)
+  return achievements
+}
+// Achievements
+
+export const useFetchAchievements = () => {
+  const { account } = useWeb3React()
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    if (account) {
+      dispatch(fetchAchievements(account))
+    }
+  }, [account, dispatch])
+}
+
+// Collectibles
+export const useGetCollectibles = () => {
+  const { account } = useWeb3React()
+  const dispatch = useAppDispatch()
+  const { isInitialized, isLoading, data } = useSelector((state: State) => state.collectibles)
+  const identifiers = Object.keys(data)
+
+  useEffect(() => {
+    // Fetch nfts only if we have not done so already
+    if (!isInitialized) {
+      dispatch(fetchWalletNfts(account))
+    }
+  }, [isInitialized, account, dispatch])
+
+  return {
+    isInitialized,
+    isLoading,
+    tokenIds: data,
+    nftsInWallet: Nfts.filter((nft) => identifiers.includes(nft.identifier)),
+  }
+}
+
+export const useTeams = () => {
+  const { isInitialized, isLoading, data }: TeamsState = useSelector((state: State) => state.teams)
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(fetchTeams())
+  }, [dispatch])
+
+  return { teams: data, isInitialized, isLoading }
 }

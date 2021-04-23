@@ -10,7 +10,7 @@ const StyledNav = styled.div`
 
 const Nav = ({ activeIndex = 0 }) => (
   <StyledNav>
-    <ButtonMenu activeIndex={activeIndex} size="sm" variant="subtle">
+    <ButtonMenu activeIndex={activeIndex} scale="sm" variant="subtle">
       <ButtonMenuItem id="swap-nav-link" to="/layer/info" as={Link}>
         <TranslatedText translationId={800}>Info</TranslatedText>
       </ButtonMenuItem>

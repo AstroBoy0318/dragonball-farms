@@ -33,7 +33,7 @@ const ApyButton: React.FC<ApyButtonProps> = ({
   )
 
   return (
-    <IconButton onClick={onPresentApyModal} variant="text" size="sm" ml="4px">
+    <IconButton onClick={onPresentApyModal} variant="text" scale="sm" ml="4px">
       <CalculateIcon />
     </IconButton>
   )

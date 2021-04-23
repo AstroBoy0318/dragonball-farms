@@ -87,7 +87,7 @@ const FarmedStakingCard = () => {
               id="harvest-all"
               disabled={balancesWithValue.length <= 0 || pendingTx}
               onClick={harvestAllFarms}
-              fullWidth
+              width="100%"
             >
               {pendingTx
                 ? TranslateString(548, 'Collecting EGG')

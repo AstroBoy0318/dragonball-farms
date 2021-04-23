@@ -10,3 +10,5 @@ export const BLOCKS_PER_YEAR = new BigNumber(10512000)
 export const BSC_BLOCK_TIME = 3
 
 export const CAKE_POOL_PID = 1
+export const BASE_EXCHANGE_URL = 'https://exchange.pancakeswap.finance'
+export const BASE_ADD_LIQUIDITY_URL = `${BASE_EXCHANGE_URL}/#/add`

@@ -45,7 +45,7 @@ const BalanceInput: React.FC<Props> = ({ max, symbol, onChange, onSelectMax, val
             <StyledTokenSymbol>{symbol}</StyledTokenSymbol>
             <StyledSpacer />
             <div>
-              <Button size="sm" onClick={onSelectMax}>
+              <Button scale="sm" onClick={onSelectMax}>
                 {TranslateString(452, 'Max')}
               </Button>
             </div>

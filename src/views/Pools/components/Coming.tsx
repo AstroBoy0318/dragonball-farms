@@ -46,7 +46,7 @@ const Coming: React.FC = () => {
         <Button
           variant="secondary"
           as="button"
-          fullWidth
+          width="100%"
           mb="16px"
           // eslint-disable-next-line no-alert
           onClick={() => alert(`We'll announce soon on Telegram how to apply, stay tunned!`)}

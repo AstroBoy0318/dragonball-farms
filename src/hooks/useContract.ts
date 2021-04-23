@@ -1,7 +1,6 @@
 import { useEffect, useState, useMemo } from 'react'
 import { AbiItem } from 'web3-utils'
 import { ContractOptions } from 'web3-eth-contract'
-import { useWeb3React } from '@web3-react/core'
 import useWeb3 from 'hooks/useWeb3'
 import {
   getMasterChefAddress,
@@ -11,9 +10,15 @@ import {
   getLotteryAddress,
   getLotteryTicketAddress,
 } from 'utils/addressHelpers'
+import {
+  getBunnyFactoryContract,
+  getClaimRefundContract, getErc721Contract,
+  getIfoV1Contract,
+  getIfoV2Contract,
+  getPointCenterIfoContract, getProfileContract,
+} from 'utils/contractHelpers'
 import { poolsConfig } from 'config/constants'
 import { PoolCategory } from 'config/constants/types'
-import ifo from 'config/abi/ifo.json'
 import ido from 'config/abi/ido.json'
 import erc20 from 'config/abi/erc20.json'
 import rabbitmintingfarm from 'config/abi/rabbitmintingfarm.json'
@@ -24,7 +29,6 @@ import masterChef from 'config/abi/masterchef.json'
 import masterChef3 from 'config/abi/masterchef3.json'
 import sousChef from 'config/abi/sousChef.json'
 import smartChefBnb from 'config/abi/sousChefBnb.json'
-import { getContractIfo } from 'utils/erc20Ifo'
 
 const CHAIN_ID = process.env.REACT_APP_CHAIN_ID
 
@@ -37,25 +41,6 @@ const useContract = (abi: AbiItem, address: string, contractOptions?: ContractOp
   }, [abi, address, contractOptions, web3])
 
   return contract
-}
-
-/**
- * Helper hooks to get specific contracts (by ABI)
- */
-
-export const useIfoContract = (address: string, withSignerIfPossible = true) => {
-  const ABI = ifo;
-  const { library, account } = useWeb3React()
-  const newLibrary = library || window.library
-  return useMemo(() => {
-    if (!address || !ABI || !newLibrary) return null
-    try {
-      return getContractIfo(address, ABI, newLibrary, withSignerIfPossible && account ? account : undefined)
-    } catch (error) {
-      console.error('Failed to get contract', error)
-      return null
-    }
-  }, [address, ABI, newLibrary, withSignerIfPossible, account])
 }
 
 export const useIdoContract = (address: string) => {
@@ -111,6 +96,46 @@ export const useSmartChef = (id: number) => {
   const rawAbi = config.poolCategory === PoolCategory.BINANCE ? smartChefBnb : sousChef
   const abi = (rawAbi as unknown) as AbiItem
   return useContract(abi, config.contractAddress[CHAIN_ID])
+}
+/**
+ * Helper hooks to get specific contracts (by ABI)
+ */
+
+export const useIfoV1Contract = (address: string) => {
+  const web3 = useWeb3()
+  return useMemo(() => getIfoV1Contract(address, web3), [address, web3])
+}
+
+export const useIfoV2Contract = (address: string) => {
+  const web3 = useWeb3()
+  return useMemo(() => getIfoV2Contract(address, web3), [address, web3])
+}
+
+export const usePointCenterIfoContract = () => {
+  const web3 = useWeb3()
+  return useMemo(() => getPointCenterIfoContract(web3), [web3])
+}
+
+export const useClaimRefundContract = () => {
+  const web3 = useWeb3()
+  return useMemo(() => getClaimRefundContract(web3), [web3])
+}
+
+export const useProfile = () => {
+  const web3 = useWeb3()
+  return useMemo(() => getProfileContract(web3), [web3])
+}
+/**
+ * @see https://docs.openzeppelin.com/contracts/3.x/api/token/erc721
+ */
+export const useERC721 = (address: string) => {
+  const web3 = useWeb3()
+  return useMemo(() => getErc721Contract(address, web3), [address, web3])
+}
+
+export const useBunnyFactory = () => {
+  const web3 = useWeb3()
+  return useMemo(() => getBunnyFactoryContract(web3), [web3])
 }
 
 export default useContract

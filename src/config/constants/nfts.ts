@@ -1,7 +1,25 @@
-import { Nft } from './types'
+import { Nft, NftSource, NftType } from './types'
 
 export const RABBIT_MINTING_FARM_ADDRESS = '0x7c8b60d2b859a38c8B9b5B6CB4565485cb637c7a'
 export const PANCAKE_RABBITS_ADDRESS = '0xDf7952B35f24aCF7fC0487D01c8d5690a60DBa07'
+export const IPFS_GATEWAY = 'https://gateway.pinata.cloud'
+
+export const nftSources: NftSource = {
+  [NftType.PANCAKE]: {
+    address: {
+      56: '0xDf7952B35f24aCF7fC0487D01c8d5690a60DBa07',
+      97: '0x60935F36e4631F73f0f407e68642144e07aC7f5E',
+    },
+    identifierKey: 'image',
+  },
+  [NftType.MIXIE]: {
+    address: {
+      56: '0xa251b5EAa9E67F2Bc8b33F33e20E91552Bf85566',
+      97: '',
+    },
+    identifierKey: 'image',
+  },
+}
 
 const Nfts: Nft[] = [
   {
